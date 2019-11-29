@@ -1,0 +1,2 @@
+class FuzzyProcessor:
+    pass
