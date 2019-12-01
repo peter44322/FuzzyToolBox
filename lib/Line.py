@@ -39,3 +39,30 @@ class Line:
         y2 = self.point2[1]
         y1 = self.point1[1]
         return (y1, y2)
+
+    def xDiff(self, otherLine):
+        x11, x12 = self.xs()
+        x21, x22 = otherLine.xs()
+        return (x11 - x12, x21-x22)
+
+    def yDiff(self, otherLine):
+        y11, y12 = self.ys()
+        y21, y22 = otherLine.ys()
+        return (y11 - y12, y21-y22)
+
+    def intersectWith(self, otherLine):
+        xdiff = self.xDiff(otherLine)
+        ydiff = self.yDiff(otherLine)
+
+        def det(a, b):
+            return a[0] * b[1] - a[1] * b[0]
+
+        div = det(xdiff, ydiff)
+        if div == 0:
+            return None
+
+        d = (det(self.point1, self.point2), det(
+            otherLine.point1, otherLine.point2))
+        x = det(d, xdiff) / div
+        y = det(d, ydiff) / div
+        return x, y

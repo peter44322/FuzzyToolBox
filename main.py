@@ -6,37 +6,54 @@ from lib.Plotter import Plotter
 from lib.rules.Rule import Rule
 
 
-position = LinguisticVariable(name="position", terms=[
-    LinguisticTerm('Left', FuzzySet(0, 0, 10, 35)),
-    LinguisticTerm('LeftCenter', FuzzySet(30, 40, 50)),
+openingPrice = LinguisticVariable(name="openingPrice", terms=[
+    LinguisticTerm('low', FuzzySet(0, 0, 50)),
+    LinguisticTerm('medium', FuzzySet(0, 50, 100)),
+    LinguisticTerm('high', FuzzySet(50, 100, 100)),
 ])
-position.setCrispValue(10)
+openingPrice.setCrispValue(30)
 
-angel = LinguisticVariable(name="angel", terms=[
-    LinguisticTerm('RBelow', FuzzySet(-90, -45, 9)),
-    LinguisticTerm('RUpper', FuzzySet(-9, 23, 54)),
+
+previousDayPrice = LinguisticVariable(name="previousDayPrice", terms=[
+    LinguisticTerm('low', FuzzySet(0, 0, 50)),
+    LinguisticTerm('medium', FuzzySet(0, 50, 100)),
+    LinguisticTerm('high', FuzzySet(50, 100, 100)),
 ])
-angel.setCrispValue(-45)
+previousDayPrice.setCrispValue(80)
 
-
-firePosition = LinguisticVariable(name="firePosition", terms=[
-    LinguisticTerm('NegBig', FuzzySet(-30, -30, -15)),
-    LinguisticTerm('NegMed', FuzzySet(-25, -15, -5)),
-    LinguisticTerm('NegSm', FuzzySet(-12, -6, 0)),
+closingPrice = LinguisticVariable(name="closingPrice", terms=[
+    LinguisticTerm('verylow', FuzzySet(0, 0, 25)),
+    LinguisticTerm('low', FuzzySet(0, 25, 50)),
+    LinguisticTerm('medium', FuzzySet(25, 50, 75)),
+    LinguisticTerm('high', FuzzySet(50, 75, 100)),
+    LinguisticTerm('veryhigh', FuzzySet(75, 100, 100)),
 ])
 
-varList = [position, angel, firePosition]
 
-rule1 = Rule()
-rule1.parse(
-    "position = Left AND angel = RBelow then firePosition = NegBig", varList)
+varList = [openingPrice, previousDayPrice, closingPrice]
+
+rules = [
+    "openingPrice = low AND previousDayPrice = medium then closingPrice = low",
+    "openingPrice = medium AND previousDayPrice = medium then closingPrice = medium",
+    "openingPrice = medium AND previousDayPrice = high then closingPrice = high",
+]
+
+for rule in rules:
+    ruleObject = Rule()
+    ruleObject.parse(rule, varList)
+    ruleObject.evaluate()
 
 
 plotter = Plotter()
 
-print(rule1.evaluate().fuzzyValue)
+
+print(closingPrice.fuzzyValue)
+print(closingPrice.aggregate())
 
 
-plotter.variable(position)
-plotter.variable(angel)
-plotter.variable(firePosition)
+plotter.polygonWithVar(closingPrice.aggregate(), closingPrice)
+
+
+plotter.variable(openingPrice)
+plotter.variable(previousDayPrice)
+plotter.variable(closingPrice)

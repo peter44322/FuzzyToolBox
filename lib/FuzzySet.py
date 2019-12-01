@@ -13,7 +13,7 @@ class FuzzySet:
             self.lines = [
                 Line((args[0], 0), (args[1], 1)),
                 Line((args[1], 1), (args[2], 1)),
-                Line((args[2], 1), (args[2], 0)),
+                Line((args[2], 1), (args[3], 0)),
             ]
 
     def isTriangular(self):
